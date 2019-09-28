@@ -2,14 +2,16 @@ const $app = document.getElementById('app');
 const $observe = document.getElementById('observe');
 const API = 'https://us-central1-escuelajs-api.cloudfunctions.net/characters';
 const myStorage = window.localStorage;
-myStorage.setItem('next_page', API);
+const keyStorage = 'next_fetch';
 
-const getData = api => {
-  fetch(api)
+myStorage.setItem(keyStorage, API);
+
+const getData = async api => {
+  await fetch(api)
     .then(response => response.json())
     .then(response => {
       const characters = response.results;
-      myStorage.setItem('next_page', response.info.next);
+      myStorage.setItem(keyStorage, response.info.next);
       let output = characters.map(character => {
         return `
       <article class="Card">
@@ -31,9 +33,12 @@ const loadData =  api => {
 };
 
 const intersectionObserver = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting) {
-    loadData(myStorage.getItem('next_page'));
-  }
+
+    if (myStorage.getItem(keyStorage) === '' || myStorage.getItem(keyStorage) === null) {
+        console.log(`Ya no hay más personajes`);
+    } else if (entries[0].isIntersecting) {
+        loadData(myStorage.getItem(keyStorage));
+    }
 }, {
   rootMargin: '0px 0px 100% 0px',
 });
