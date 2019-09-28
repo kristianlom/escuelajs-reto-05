@@ -1,13 +1,13 @@
 const $app = document.getElementById('app');
 const $observe = document.getElementById('observe');
-const API = 'https://us-central1-escuelajs-api.cloudfunctions.net/characters';
+const API = 'https://rickandmortyapi.com/api/character/';
 const myStorage = window.localStorage;
 const keyStorage = 'next_fetch';
 
 myStorage.setItem(keyStorage, API);
 
-const getData = async api => {
-  await fetch(api)
+const getData = api => {
+   fetch(api)
     .then(response => response.json())
     .then(response => {
       const characters = response.results;
@@ -25,11 +25,11 @@ const getData = async api => {
       newItem.innerHTML = output;
       $app.appendChild(newItem);
     })
-    .catch(error => console.log(error));
+    .catch(error => console.log(new Error(error)));
 };
 
-const loadData =  api => {
-    getData(api);
+const loadData = async api => {
+ await getData(api);
 };
 
 const intersectionObserver = new IntersectionObserver(entries => {
@@ -44,3 +44,7 @@ const intersectionObserver = new IntersectionObserver(entries => {
 });
 
 intersectionObserver.observe($observe);
+
+window.onunload(function () {
+    myStorage.clear();
+});
