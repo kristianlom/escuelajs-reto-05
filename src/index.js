@@ -36,6 +36,7 @@ const intersectionObserver = new IntersectionObserver(entries => {
 
     if (myStorage.getItem(keyStorage) === '' || myStorage.getItem(keyStorage) === null) {
         console.log(`Ya no hay más personajes`);
+        intersectionObserver.unobserve($observe);
     } else if (entries[0].isIntersecting) {
         loadData(myStorage.getItem(keyStorage));
     }
@@ -45,6 +46,6 @@ const intersectionObserver = new IntersectionObserver(entries => {
 
 intersectionObserver.observe($observe);
 
-window.onunload(function () {
+window.onload(function () {
     myStorage.clear();
 });
